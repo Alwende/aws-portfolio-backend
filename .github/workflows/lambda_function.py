@@ -18,7 +18,7 @@ def lambda_handler(event, context):
         ExpressionAttributeValues={':inc': 1},
         ReturnValues='UPDATED_NEW'
     )
-    
+
     # 3. Get the new count
     visit_count = int(response['Attributes']['views'])
     
