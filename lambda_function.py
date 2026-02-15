@@ -11,22 +11,24 @@ def lambda_handler(event, context):
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
     # 2. Update the Visitor Count (Atomic Counter)
-    response = table.update_item(
-        Key={'id': 'main_page'},
-        UpdateExpression='SET #v = #v + :inc',
-        ExpressionAttributeNames={'#v': 'views'},
-        ExpressionAttributeValues={':inc': 1},
-        ReturnValues='UPDATED_NEW'
-    )
+    try:
+        response = table.update_item(
+            Key={'id': 'main_page'},
+            UpdateExpression='SET #v = #v + :inc',
+            ExpressionAttributeNames={'#v': 'views'},
+            ExpressionAttributeValues={':inc': 1},
+            ReturnValues='UPDATED_NEW'
+        )
+        visit_count = int(response['Attributes']['views'])
+    except Exception as e:
+        print(e)
+        visit_count = 0
     
-    # 3. Get the new count
-    visit_count = int(response['Attributes']['views'])
-    
-    # 4. Return the data
+    # 3. Return the data
     return {
         'statusCode': 200,
         'body': json.dumps({
-            'message': 'Project 4 Status: OPERATIONAL',
+            'message': 'Project 5 Status: AUTOMATED',
             'timestamp': current_time,
             'location': 'AWS Virginia Data Center (us-east-1)',
             'views': visit_count,
